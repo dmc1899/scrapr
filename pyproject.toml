@@ -1,0 +1,84 @@
+[tool.poetry]
+name = "scrapr"
+version = "0.1.0"
+description = ""
+authors = ["Darragh McConville <dmc1899@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+autoscraper = "^1.1.14"
+python-dotenv = "^1.0.1"
+requests = "^2.32.3"
+bs4 = "^0.0.2"
+
+[tool.poetry.group.dev.dependencies]
+deptry = "^0.20.0"
+mypy = "^1.13.0"
+black = "^24.10.0"
+pylint = "^3.3.1"
+bandit = "^1.7.10"
+types-requests = "^2.32.0.20241016"
+flake8 = "^7.1.1"
+flake8-pyproject = "^1.2.3"
+pytest = "^8.3.3"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+minversion = "7.0"
+xfail_strict = true
+filterwarnings = ["error"]
+log_cli_level = "info"
+addopts = [
+    "--import-mode=importlib",#See https://docs.pytest.org/en/7.2.x/explanation/goodpractices.html#choosing-a-test-layout-import-rules
+]
+
+[tool.mypy]
+files = ["src","tests"]
+disallow_untyped_defs = "True"
+#disallow_any_unimported = "True"
+no_implicit_optional = "True"
+check_untyped_defs = "True"
+warn_return_any = "True"
+warn_unused_ignores = "True"
+show_error_codes = "True"
+ignore_missing_imports = "True"
+
+[tool.black]
+line-length = 120
+include = ".*\\.py$"
+unstable = false
+preview = false
+skip-string-normalization = true
+
+[tool.pylint.format]
+max-line-length = 120
+max-attributes = 30
+max-locals = 30
+const-naming-style = 'UPPER_CASE'
+class-naming-style = 'PascalCase'
+function-naming-style = 'snake_case'
+docstring-min-length = -1
+disable = '''logging-fstring-interpolation,
+        too-many-nested-blocks,
+'''
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = [
+    "missing-function-docstring",
+    "missing-module-docstring",
+    "missing-class-docstring"
+]
+
+[tool.flake8]
+max-line-length = 120
+exclude = [".git", "<strong>pycache</strong>", "build", "dist"]
+
+
+[tool.deptry]
+known_first_party = ["scrapr"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

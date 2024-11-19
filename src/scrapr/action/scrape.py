@@ -10,8 +10,8 @@ from bs4 import BeautifulSoup
 import requests
 from requests.exceptions import RequestException
 
-class ScraperAPICreditsExhaustedException(Exception):
-    def __init__(self, message="No credits remaining in Scraper API account"):
+class ScraperServiceCreditsExhaustedException(Exception):
+    def __init__(self, message="No credits remaining in account."):
         self.message = message
         super().__init__(self.message)
 
@@ -27,11 +27,12 @@ class Scraper:
             response = requests.get(url=self.api_url, params=payload, timeout=30)
             response.raise_for_status()
             return response.text
+
         except requests.HTTPError as e:
             if e.response.status_code == 403:
                 error_body = e.response.content if e.response.content else {}
                 if "credits" in str(error_body).lower() or "quota" in str(error_body).lower():
-                    raise ScraperAPICreditsExhaustedException(
+                    raise ScraperServiceCreditsExhaustedException(
                         f"Scraper API credits exhausted: {error_body}"
                     )
                 raise RequestException(f"Access forbidden (403). Please check your API key and permissions: {str(e)}")
@@ -90,6 +91,8 @@ class Scraper:
 
                 to_visit.extend(new_urls - visited)
 
+            except ScraperServiceCreditsExhaustedException as e:
+                raise e
             except (RequestException, OSError) as e:
                 print(f"An error occurred: {e}. Continuing...")
 
